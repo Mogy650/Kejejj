@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>آسف حقك عليا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plum-deep:#2b1b2e;
+    --wine:#4a2545;
+    --blush:#f1b4bb;
+    --gold:#d4af7a;
+    --rose:#c85c5c;
+    --cream:#f7ece9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Tajawal',sans-serif;
+    background:radial-gradient(ellipse at 30% 20%, var(--wine) 0%, var(--plum-deep) 55%, #1a0f1c 100%);
+    color:var(--cream);
+    overflow:hidden;
+    height:100vh;
+    position:relative;
+  }
+  /* ambient floating hearts */
+  .ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .ambient span{
+    position:absolute;bottom:-10%;
+    font-size:1.2rem;opacity:.18;color:var(--blush);
+    animation:float linear infinite;
+  }
+  @keyframes float{
+    to{transform:translateY(-120vh) rotate(30deg);opacity:0;}
+  }
+
+  .stage{position:relative;height:100vh;width:100vw;z-index:1;}
+
+  .page{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:8vh 6vw;
+    opacity:0;visibility:hidden;
+    transform:translateX(40px);
+    transition:opacity .6s ease, transform .6s ease, visibility .6s;
+  }
+  .page.active{
+    opacity:1;visibility:visible;transform:translateX(0);
+  }
+
+  .eyebrow{
+    font-size:.85rem;letter-spacing:.15em;color:var(--gold);
+    text-transform:uppercase;margin-bottom:1rem;font-weight:500;
+  }
+  h1,h2{
+    font-family:'Aref Ruqaa',serif;font-weight:700;
+    color:var(--cream);line-height:1.3;
+  }
+  h2{font-size:clamp(1.8rem,5vw,2.8rem);margin-bottom:1.4rem;position:relative;display:inline-block;}
+  h2::after{
+    content:"";display:block;width:60%;height:6px;margin:.4rem auto 0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 10'%3E%3Cpath d='M0 5 Q 10 0, 20 5 T 40 5 T 60 5 T 80 5 T 100 5' stroke='%23D4AF7A' stroke-width='2' fill='none'/%3E%3C/svg%3E") repeat-x;
+    background-size:40px 6px;opacity:.8;
+  }
+  p{font-size:clamp(1rem,2.4vw,1.25rem);line-height:2;max-width:560px;color:#eaddda;}
+
+  .list{list-style:none;margin-top:1.4rem;text-align:right;max-width:520px;}
+  .list li{
+    font-size:clamp(1rem,2.2vw,1.15rem);
+    line-height:1.9;margin-bottom:.6rem;padding-right:1.6rem;position:relative;color:#eaddda;
+  }
+  .list li::before{
+    content:"♥";position:absolute;right:0;color:var(--rose);font-size:.9em;top:.1em;
+  }
+
+  /* ---- cover / envelope ---- */
+  #cover .eyebrow{margin-bottom:.6rem;}
+  #cover h1{font-size:clamp(2.2rem,7vw,3.6rem);margin-bottom:2.2rem;}
+  #cover h1 span{color:var(--blush);}
+
+  .envelope-wrap{
+    width:min(320px,70vw);aspect-ratio:16/10.5;
+    perspective:1000px;cursor:pointer;margin-bottom:1.6rem;
+  }
+  .envelope{position:relative;width:100%;height:100%;}
+  .env-body{
+    position:absolute;inset:0;
+    background:linear-gradient(160deg,var(--rose),#a8455a);
+    border-radius:6px;
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+    overflow:hidden;
+  }
+  .env-body::before,.env-body::after{
+    content:"";position:absolute;bottom:0;width:0;height:0;
+    border-style:solid;
+  }
+  .env-body::before{
+    left:0;border-width:0 0 55% 50%;
+    border-color:transparent transparent rgba(0,0,0,.12) transparent;
+  }
+  .env-body::after{
+    right:0;border-width:55% 50% 0 0;
+    border-color:transparent transparent transparent rgba(255,255,255,.08);
+  }
+  .letter{
+    position:absolute;left:8%;right:8%;bottom:6%;top:38%;
+    background:var(--cream);border-radius:4px;
+    box-shadow:0 -4px 10px rgba(0,0,0,.15);
+    transform:translateY(6%);
+    transition:transform .8s cubic-bezier(.22,1,.36,1);
+    z-index:1;
+  }
+  .flap{
+    position:absolute;top:0;left:0;right:0;height:60%;
+    background:linear-gradient(160deg,#e07583,var(--rose));
+    clip-path:polygon(0 0,100% 0,50% 90%);
+    transform-origin:top center;
+    transition:transform 1s cubic-bezier(.4,0,.2,1);
+    z-index:2;
+    box-shadow:0 6px 14px rgba(0,0,0,.25);
+  }
+  .seal{
+    position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);
+    width:46px;height:46px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#e8b3a0,var(--gold) 70%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 3px 8px rgba(0,0,0,.35);
+    font-size:1.2rem;z-index:3;color:var(--plum-deep);
+    transition:opacity .4s ease;
+  }
+  .envelope-wrap.open .flap{transform:rotateX(180deg);}
+  .envelope-wrap.open .seal{opacity:0;}
+  .envelope-wrap.open .letter{transform:translateY(-18%);}
+
+  .hint{font-size:.85rem;color:var(--gold);opacity:.8;letter-spacing:.05em;}
+
+  /* buttons */
+  .btn{
+    font-family:'Tajawal',sans-serif;font-weight:700;font-size:1rem;
+    padding:.85rem 2.2rem;border-radius:999px;border:none;cursor:pointer;
+    background:linear-gradient(135deg,var(--rose),#a8455a);color:var(--cream);
+    box-shadow:0 8px 20px rgba(200,92,92,.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(200,92,92,.45);}
+  .btn.ghost{
+    background:transparent;border:1.5px solid var(--gold);color:var(--gold);
+    box-shadow:none;
+  }
+  .actions{margin-top:2.2rem;display:flex;gap:1rem;}
+
+  /* dodge button */
+  #noBtn{position:relative;transition:transform .15s ease, left .15s ease, top .15s ease;}
+  #finalStage{position:relative;width:100%;max-width:520px;height:70px;}
+  #finalStage .actions{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:1rem;margin:0;}
+
+  /* nav */
+  nav.pager{
+    position:fixed;bottom:5vh;left:0;right:0;
+    display:flex;align-items:center;justify-content:center;gap:1.6rem;
+    z-index:5;opacity:0;pointer-events:none;transition:opacity .5s ease;
+  }
+  nav.pager.show{opacity:1;pointer-events:auto;}
+  .navbtn{
+    background:none;border:none;color:var(--gold);font-size:1.5rem;cursor:pointer;
+    line-height:1;padding:.4rem;transition:transform .2s ease, opacity .2s ease;
+  }
+  .navbtn:disabled{opacity:.25;cursor:default;}
+  .navbtn:not(:disabled):hover{transform:scale(1.15);}
+  .dots{display:flex;gap:.5rem;}
+  .dot{width:8px;height:8px;border-radius:50%;background:rgba(247,236,233,.25);cursor:pointer;transition:background .3s,transform .3s;}
+  .dot.active{background:var(--gold);transform:scale(1.3);}
+
+  /* celebration overlay */
+  #celebrate{
+    position:fixed;inset:0;z-index:20;display:none;
+    align-items:center;justify-content:center;flex-direction:column;text-align:center;
+    background:radial-gradient(ellipse at center, rgba(74,37,69,.97), rgba(26,15,28,.99));
+    padding:6vh 6vw;
+  }
+  #celebrate h2{color:var(--blush);}
+  #celebrate p{margin-top:.8rem;}
+  .rain{position:fixed;inset:0;z-index:19;pointer-events:none;overflow:hidden;}
+  .rain span{position:absolute;top:-10%;font-size:1.4rem;animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(115vh) rotate(360deg);opacity:.2;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .ambient span, .rain span{animation:none;display:none;}
+    .page, .letter, .flap{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient" id="ambient"></div>
+
+<div class="stage">
+
+  <!-- COVER -->
+  <section class="page active" id="cover">
+    <div class="eyebrow">رسالة ليكي</div>
+    <h1>لـ <span id="nameSlot">حبيبتي</span></h1>
+    <div class="envelope-wrap" id="envelopeWrap">
+      <div class="envelope">
+        <div class="letter"></div>
+        <div class="env-body"></div>
+        <div class="flap"></div>
+        <div class="seal">♥</div>
+      </div>
+    </div>
+    <div class="hint" id="coverHint">دوسي على الظرف عشان تفتحيه</div>
+  </section>
+
+  <!-- PAGE 1 -->
+  <section class="page" id="p1">
+    <div class="eyebrow">01</div>
+    <h2>آسف</h2>
+    <p>مكنش قصدي إني أضايقك.<br>
+    آسف حقك عليا، بجد.<br>
+    مش هقولك "معلش" وأنسى الموضوع، عايز أقولك إني حاسس بيكي، وغلطتي دي هتفضل فارقة معايا.</p>
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="page" id="p2">
+    <div class="eyebrow">02</div>
+    <h2>انتِ أغلى من أي حد</h2>
+    <p>وعشان تعرفي أنا حاسس بإيه بالظبط:</p>
+    <ul class="list">
+      <li>ضحكتك بتنوّر يومي كله</li>
+      <li>وجودك جنبي بيهدّي أي قلق عندي</li>
+      <li>وانتِ فعلاً أغلى حاجة عندي في الدنيا</li>
+    </ul>
+  </section>
+
+  <!-- PAGE 3 -->
+  <section class="page" id="p3">
+    <div class="eyebrow">03</div>
+    <h2>هوعد</h2>
+    <p>من دلوقتي:</p>
+    <ul class="list">
+      <li>هسمعك أكتر قبل ما احكم</li>
+      <li>هفكر قبل ما اتكلم من غير ما أدّي بالك</li>
+      <li>هبقى جنبك مش بس وقت الفرح</li>
+    </ul>
+  </section>
+
+  <!-- PAGE 4 -->
+  <section class="page" id="p4">
+    <div class="eyebrow">04</div>
+    <h2>بجد</h2>
+    <p>مش عايز نعدّي اليوم ده وانتِ زعلانة.<br>
+    عايزين نرجع زي الأول... ولا أحسن من الأول كمان.<br>
+    انتِ اللي بتخليني حابب أكون نسخة أحسن من نفسي.</p>
+  </section>
+
+  <!-- PAGE 5 : final -->
+  <section class="page" id="p5">
+    <div class="eyebrow">05</div>
+    <h2>تسامحيني؟</h2>
+    <p>مستني ردك... 👀</p>
+    <div id="finalStage">
+      <div class="actions">
+        <button class="btn" id="yesBtn">أيوه ❤️</button>
+        <button class="btn ghost" id="noBtn">لأ</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<nav class="pager" id="pager">
+  <button class="navbtn" id="prevBtn" aria-label="السابق">›</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="nextBtn" aria-label="التالي">‹</button>
+</nav>
+
+<div class="rain" id="rain"></div>
+<div id="celebrate">
+  <h2 id="celebrateTitle">يااااه 🥹❤️</h2>
+  <p id="celebrateText">يومك عدّى حلو كده... يلا نبدأ من جديد</p>
+</div>
+
+<script>
+/* =======================================================
+   عدّلي اسمها هنا بس، وهيتغير في الصفحة كلها تلقائي
+   ======================================================= */
+const herName = "حبيبتي";
+
+document.getElementById('nameSlot').textContent = herName;
+
+// ambient floating hearts
+const ambient = document.getElementById('ambient');
+for(let i=0;i<14;i++){
+  const s = document.createElement('span');
+  s.textContent = ['♥','✦','♡'][Math.floor(Math.random()*3)];
+  s.style.right = Math.random()*100+'%';
+  s.style.animationDuration = (10+Math.random()*10)+'s';
+  s.style.animationDelay = (Math.random()*10)+'s';
+  s.style.fontSize = (0.8+Math.random()*1.4)+'rem';
+  ambient.appendChild(s);
+}
+
+// pages
+const pageIds = ['p1','p2','p3','p4','p5'];
+const pages = pageIds.map(id=>document.getElementById(id));
+let current = -1; // -1 = cover
+
+const pager = document.getElementById('pager');
+const dotsWrap = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+pageIds.forEach((id,i)=>{
+  const d = document.createElement('div');
+  d.className = 'dot';
+  d.addEventListener('click',()=>goTo(i));
+  dotsWrap.appendChild(d);
+});
+
+function updateDots(){
+  [...dotsWrap.children].forEach((d,i)=>d.classList.toggle('active', i===current));
+}
+
+function goTo(i){
+  if(i<0||i>=pages.length) return;
+  pages.forEach(p=>p.classList.remove('active'));
+  pages[i].classList.add('active');
+  current = i;
+  updateDots();
+  prevBtn.disabled = i===0;
+  nextBtn.disabled = i===pages.length-1;
+}
+
+prevBtn.addEventListener('click',()=>goTo(current-1));
+nextBtn.addEventListener('click',()=>goTo(current+1));
+
+// envelope open -> start journey
+const envelopeWrap = document.getElementById('envelopeWrap');
+const coverHint = document.getElementById('coverHint');
+let opened = false;
+envelopeWrap.addEventListener('click',()=>{
+  if(opened) return;
+  opened = true;
+  envelopeWrap.classList.add('open');
+  coverHint.textContent = 'بتتفتح... 💌';
+  setTimeout(()=>{
+    document.getElementById('cover').classList.remove('active');
+    pager.classList.add('show');
+    goTo(0);
+  },1100);
+});
+
+// dodging "لأ" button
+const noBtn = document.getElementById('noBtn');
+const stage = document.getElementById('finalStage');
+function dodge(){
+  const sw = stage.clientWidth, sh = stage.clientHeight;
+  const bw = noBtn.offsetWidth, bh = noBtn.offsetHeight;
+  const x = Math.random()*(sw-bw);
+  const y = Math.random()*(sh-bh);
+  noBtn.style.position = 'absolute';
+  noBtn.style.left = x+'px';
+  noBtn.style.top = y+'px';
+}
+noBtn.addEventListener('mouseenter', dodge);
+noBtn.addEventListener('touchstart', (e)=>{ e.preventDefault(); dodge(); });
+noBtn.addEventListener('click', (e)=>{ e.preventDefault(); dodge(); });
+
+// yes -> celebration
+document.getElementById('yesBtn').addEventListener('click',()=>{
+  document.getElementById('celebrateText').textContent =
+    `يومك عدّى حلو كده يا ${herName}... يلا نبدأ من جديد ✨`;
+  document.getElementById('celebrate').style.display = 'flex';
+  pager.classList.remove('show');
+  const rain = document.getElementById('rain');
+  for(let i=0;i<40;i++){
+    const s = document.createElement('span');
+    s.textContent = ['♥','❤','✿','✦'][Math.floor(Math.random()*4)];
+    s.style.right = Math.random()*100+'%';
+    s.style.animationDuration = (2.5+Math.random()*2.5)+'s';
+    s.style.animationDelay = (Math.random()*1.5)+'s';
+    s.style.fontSize = (0.9+Math.random()*1.3)+'rem';
+    s.style.color = ['#c85c5c','#f1b4bb','#d4af7a'][Math.floor(Math.random()*3)];
+    rain.appendChild(s);
+  }
+});
+
+// keyboard support
+document.addEventListener('keydown',(e)=>{
+  if(current<0) return;
+  if(e.key==='ArrowLeft') goTo(current+1);
+  if(e.key==='ArrowRight') goTo(current-1);
+});
+</script>
+</body>
+</html>
